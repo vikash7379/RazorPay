@@ -39,19 +39,15 @@ router.post('/paymentVerification',async(req,res)=>{
 
     try {
         const {razorpay_order_id,razorpay_payment_id,razorpay_signature} = req.body;
-        console.log("Order ID:", razorpay_order_id);
-        console.log("Payment ID:", razorpay_payment_id);
-        console.log("Key Secret:", process.env.RAZORPAY_SECRET_KEY);
-        console.log("first",razorpay_payment_id)
 
         const sign = razorpay_order_id + "|" + razorpay_payment_id;
-        console.log("Sign:", sign);
+
         const expectedSign = crypto
             .createHmac("sha256",process.env.RAZORPAY_SECRET_KEY)
             .update(sign.toString())
             .digest("hex");
         const varified = razorpay_signature === expectedSign;
-        console.log("vaar",varified);
+
 
         if(varified){
             return res.redirect(`http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`)
